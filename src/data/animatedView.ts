@@ -12,7 +12,11 @@ export const animatedView = {
   email: "designer.ad07@gmail.com",
   linkedin: "https://www.linkedin.com/in/aditya-dutta-620762205",
   cvHref: "/cv.pdf",
-  journeyHref: process.env.NEXT_PUBLIC_JOURNEY_URL ?? "http://localhost:3801",
+  journeyHref:
+    process.env.NEXT_PUBLIC_JOURNEY_URL ??
+    (process.env.NODE_ENV === "production"
+      ? "https://aditya-career-journey.vercel.app"
+      : "http://localhost:3801"),
 
   hero: {
     kicker: "Portfolio — Vol. 01",
