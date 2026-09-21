@@ -1,0 +1,296 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.av-nav {
+  --av-nav-h: 4.25rem;
+
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  transition:
+    background-color 0.3s $ease-out,
+    border-color 0.3s $ease-out;
+  border-bottom: 1px solid transparent;
+}
+
+.av-nav.is-condensed {
+  background-color: var(--av-scrim);
+  backdrop-filter: blur(14px) saturate(150%);
+  border-bottom-color: var(--av-line);
+}
+
+.av-nav__bar {
+  width: 100%;
+  max-width: var(--av-max);
+  margin-inline: auto;
+  padding-inline: var(--av-gutter);
+  height: var(--av-nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-lg;
+}
+
+.av-nav__logo {
+  display: inline-flex;
+  align-items: center;
+
+  img {
+    display: block;
+    height: 1.4rem;
+    width: auto;
+    filter: brightness(0) invert(1);
+    transition: filter 0.2s $ease-out, opacity 0.2s $ease-out;
+  }
+
+  &:hover img {
+    opacity: 0.7;
+  }
+}
+
+[data-theme="light"] .av-nav__logo img {
+  filter: brightness(0);
+}
+
+/* ---------- Desktop links ---------- */
+.av-nav__links {
+  display: none;
+
+  @include respond-to(lg) {
+    display: flex;
+    align-items: center;
+    gap: $space-lg;
+  }
+}
+
+.av-nav__link {
+  position: relative;
+  font-family: var(--av-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--av-ink-2);
+  padding-block: 0.35rem;
+  transition: color 0.25s $ease-out;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--av-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s $ease-out;
+  }
+
+  &:hover {
+    color: var(--av-ink);
+  }
+
+  &.is-active {
+    color: var(--av-accent);
+  }
+
+  &.is-active::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- Actions ---------- */
+.av-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+}
+
+.av-nav__classic {
+  display: none;
+  font-family: var(--av-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--av-ink-2);
+  border: 1px solid var(--av-line-strong);
+  border-radius: $radius-full;
+  padding: 0.5rem 0.9rem;
+  transition:
+    color 0.25s $ease-out,
+    border-color 0.25s $ease-out;
+
+  &:hover {
+    color: var(--av-accent);
+    border-color: var(--av-accent);
+  }
+
+  @include respond-to(md) {
+    display: inline-flex;
+  }
+}
+
+.theme-toggle {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: $radius-full;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  transition:
+    color 0.2s $ease-out,
+    background-color 0.2s $ease-out;
+
+  &:hover {
+    color: var(--color-text);
+    background-color: var(--color-bg-elevated);
+  }
+
+  svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+}
+
+/* The shared toggle keeps its own class; only the palette is re-pointed. */
+.av-nav .theme-toggle {
+  color: var(--av-ink);
+  border-color: var(--av-line-strong);
+
+  &:hover {
+    color: var(--av-accent);
+    border-color: var(--av-accent);
+  }
+}
+
+.av-nav__toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--av-line-strong);
+  border-radius: $radius-full;
+
+  span {
+    display: block;
+    width: 15px;
+    height: 1.5px;
+    background-color: currentColor;
+    transition: transform 0.3s $ease-out;
+  }
+
+  &.is-open span:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+
+  &.is-open span:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  @include respond-to(lg) {
+    display: none;
+  }
+}
+
+/* ---------- Progress ---------- */
+.av-nav__progress {
+  display: block;
+  height: 2px;
+  background-color: color-mix(in srgb, var(--av-line-strong) 60%, transparent);
+}
+
+.av-nav__progress-fill {
+  display: block;
+  height: 100%;
+  background-color: var(--av-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* ---------- Mobile menu ---------- */
+.av-nav__menu {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--av-bg);
+  padding: calc(var(--av-nav-h) + 2rem) var(--av-gutter) $space-2xl;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: $space-xl;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.35s $ease-out,
+    visibility 0.35s $ease-out;
+
+  &.is-open {
+    z-index: 1;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+
+  @include respond-to(lg) {
+    display: none;
+  }
+}
+
+.av-nav__menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
+.av-nav__menu-link {
+  display: flex;
+  align-items: baseline;
+  gap: $space-md;
+  font-family: var(--av-display);
+  font-size: clamp(2rem, 11vw, 3.25rem);
+  line-height: 1.1;
+  color: var(--av-ink);
+  transition: color 0.2s $ease-out;
+
+  &:hover {
+    color: var(--av-accent);
+  }
+}
+
+.av-nav__menu-index {
+  font-family: var(--av-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--av-accent);
+}
+
+.av-nav__menu-classic {
+  font-family: var(--av-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--av-ink-2);
+  border-top: 1px solid var(--av-line);
+  padding-top: $space-lg;
+
+  &:hover {
+    color: var(--av-accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-nav,
+  .av-nav__link::after,
+  .av-nav__menu,
+  .av-nav__toggle span {
+    transition: none;
+  }
+}

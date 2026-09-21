@@ -1,0 +1,259 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.av-contact {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--av-line);
+}
+
+/* Hero callback: the same rings and monogram, oversized and half off-canvas. */
+.av-contact__echo {
+  position: absolute;
+  top: 50%;
+  right: -22%;
+  width: min(46rem, 90vw);
+  translate: 0 -50%;
+  pointer-events: none;
+  opacity: 0.5;
+
+  svg {
+    width: 100%;
+    height: auto;
+    animation: av-echo-spin 120s linear infinite;
+  }
+
+  circle {
+    fill: none;
+    stroke: var(--av-line-strong);
+    stroke-width: 1;
+  }
+
+  image {
+    opacity: 0.08;
+    filter: brightness(0) invert(1);
+  }
+}
+
+[data-theme="light"] .av-contact__echo image {
+  filter: brightness(0);
+}
+
+@keyframes av-echo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.av-contact__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+}
+
+.av-contact__title {
+  font-family: var(--av-display);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+.av-contact__body p {
+  color: var(--av-ink-2);
+  font-size: 1.02rem;
+  line-height: 1.7;
+  max-width: 34rem;
+  text-wrap: pretty;
+}
+
+/* ---------- Email CTA ---------- */
+.av-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-lg;
+  margin-top: $space-md;
+}
+
+.av-email__link {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-md;
+  flex-wrap: wrap;
+}
+
+.av-email__label {
+  font-family: var(--av-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--av-ink-3);
+}
+
+/* The address is stacked twice; on hover the accent copy slides up through the
+   mask while the base copy slides out, so the whole word swaps colour. */
+.av-email__address {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  font-family: var(--av-display);
+  font-size: clamp(1.35rem, 4.4vw, 2.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+
+.av-email__text {
+  display: block;
+  transition: transform 0.45s $ease-out;
+}
+
+.av-email__text--ghost {
+  position: absolute;
+  inset: 0;
+  color: var(--av-accent);
+  transform: translateY(100%);
+}
+
+.av-email__link:hover .av-email__text,
+.av-email__link:focus-visible .av-email__text {
+  transform: translateY(-100%);
+}
+
+.av-email__link:hover .av-email__text--ghost,
+.av-email__link:focus-visible .av-email__text--ghost {
+  transform: translateY(0);
+}
+
+.av-email__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--av-line-strong);
+  transition:
+    background-color 0.3s $ease-out,
+    border-color 0.3s $ease-out,
+    color 0.3s $ease-out,
+    transform 0.4s $ease-back;
+
+  svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+}
+
+.av-email__link:hover .av-email__arrow,
+.av-email__link:focus-visible .av-email__arrow {
+  background-color: var(--av-accent);
+  border-color: var(--av-accent);
+  color: var(--av-accent-ink);
+  transform: translateX(4px);
+}
+
+.av-email__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--av-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--av-ink-2);
+  border: 1px solid var(--av-line-strong);
+  border-radius: $radius-full;
+  padding: 0.65rem 1rem;
+  transition:
+    color 0.25s $ease-out,
+    border-color 0.25s $ease-out;
+
+  svg {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  &:hover {
+    color: var(--av-accent);
+    border-color: var(--av-accent);
+  }
+}
+
+.av-email__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Facts ---------- */
+.av-contact__details {
+  margin-top: $space-xl;
+}
+
+.av-contact__facts {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--av-line);
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: $space-md 0;
+    border-bottom: 1px solid var(--av-line);
+
+    @include respond-to(md) {
+      padding: $space-lg $space-lg $space-lg 0;
+      border-bottom: none;
+
+      & + div {
+        border-left: 1px solid var(--av-line);
+        padding-left: $space-lg;
+      }
+    }
+  }
+
+  dt {
+    font-family: var(--av-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--av-ink-3);
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--av-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  a:hover {
+    color: var(--av-accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-contact__echo svg {
+    animation: none;
+  }
+
+  .av-email__text,
+  .av-email__arrow {
+    transition: none;
+  }
+}

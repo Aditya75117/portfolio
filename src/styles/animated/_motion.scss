@@ -1,0 +1,26 @@
+/* Lenis integration. The global `html { scroll-behavior: smooth }` from the
+   classic stylesheet fights the virtual scroller, so it is switched off for as
+   long as Lenis is mounted. Reduced-motion visitors never mount it and keep
+   native scrolling untouched. */
+
+html.av-smooth,
+html.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}

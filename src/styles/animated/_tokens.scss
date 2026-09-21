@@ -1,0 +1,79 @@
+@use "../variables" as *;
+
+/* Editorial token set for the landing page.
+   Everything is declared on `.av` rather than `:root`. */
+
+.av {
+  --av-bg: #0b0a09;
+  --av-bg-2: #100e0c;
+  --av-surface: #171412;
+  --av-raised: #1f1b18;
+  --av-line: #2a2521;
+  --av-line-strong: #3d3630;
+  --av-ink: #f5efe4;
+  --av-ink-2: #a79c8e;
+  --av-ink-3: #6f665c;
+  /* Two accent palettes are kept side by side; `--av-accent*` below decides
+     which one the page actually renders. */
+  --av-orange: #ff4d17;
+  --av-orange-2: #ff8552;
+  --av-orange-ink: #140b06;
+  --av-chartreuse: #c8e031;
+  --av-chartreuse-2: #ddf06a;
+  --av-chartreuse-ink: #141806;
+
+  --av-accent: var(--av-chartreuse);
+  --av-accent-2: var(--av-chartreuse-2);
+  --av-accent-ink: var(--av-chartreuse-ink);
+  --av-shadow: rgba(0, 0, 0, 0.55);
+  --av-grain: 0.05;
+  --av-scrim: rgba(11, 10, 9, 0.72);
+
+  --av-display: var(--font-av-display), "Instrument Serif", Georgia, "Times New Roman", serif;
+  --av-mono: var(--font-av-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  --av-sans: #{$font-body};
+
+  /* Editorial measure: the page runs wider than the classic 1200px container. */
+  --av-max: 1440px;
+  --av-gutter: #{$space-lg};
+
+  @media (min-width: $bp-md) {
+    --av-gutter: #{$space-xl};
+  }
+
+  @media (min-width: $bp-lg) {
+    --av-gutter: 3.5rem;
+  }
+
+  @media (min-width: $bp-xl) {
+    --av-gutter: 4.5rem;
+  }
+}
+
+/* Warm paper counterpart, driven by the same global theme toggle as the classic
+   page. Contrast is held above 4.5:1 for body copy in both themes so the accent
+   stays usable on text and not only on fills. */
+[data-theme="light"] .av {
+  --av-bg: #f4efe4;
+  --av-bg-2: #efe8db;
+  --av-surface: #ffffff;
+  --av-raised: #ffffff;
+  --av-line: #ded4c3;
+  --av-line-strong: #bfb19a;
+  --av-ink: #15110d;
+  --av-ink-2: #5a5248;
+  --av-ink-3: #7c7263;
+  --av-orange: #c33604;
+  --av-orange-2: #9f2b03;
+  --av-orange-ink: #fff8f4;
+  --av-chartreuse: #5c7a0a;
+  --av-chartreuse-2: #456008;
+  --av-chartreuse-ink: #f4fad8;
+
+  --av-accent: var(--av-chartreuse);
+  --av-accent-2: var(--av-chartreuse-2);
+  --av-accent-ink: var(--av-chartreuse-ink);
+  --av-shadow: rgba(56, 38, 22, 0.14);
+  --av-grain: 0.035;
+  --av-scrim: rgba(244, 239, 228, 0.78);
+}

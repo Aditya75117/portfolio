@@ -1,0 +1,216 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.av {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+  background-color: var(--av-bg);
+  color: var(--av-ink);
+  font-family: var(--av-sans);
+  transition:
+    background-color 0.4s $ease-out,
+    color 0.4s $ease-out;
+}
+
+/* Film grain. Fixed and non-interactive so it never enters hit-testing or the
+   scroll container, and it is painted on its own layer to stay off the main
+   compositing path during scroll. */
+.av__grain {
+  position: fixed;
+  inset: -10%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: var(--av-grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  will-change: opacity;
+}
+
+/* Warm vignette that anchors the oversized type without dimming body copy. */
+.av__vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 80% at 50% 0%,
+    color-mix(in srgb, var(--av-accent) 7%, transparent) 0%,
+    transparent 55%
+  );
+}
+
+.av__main {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Layout primitives ---------- */
+.av-shell {
+  width: 100%;
+  max-width: var(--av-max);
+  margin-inline: auto;
+  padding-inline: var(--av-gutter);
+}
+
+.av-section {
+  position: relative;
+  padding-block: $space-3xl;
+
+  @include respond-to(lg) {
+    padding-block: 7.5rem;
+  }
+}
+
+.av-section--flush {
+  padding-block: 0;
+}
+
+/* ---------- Section masthead ---------- */
+.av-masthead {
+  display: grid;
+  gap: $space-md;
+  padding-bottom: $space-xl;
+
+  @include respond-to(md) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    align-items: end;
+    gap: $space-2xl;
+    padding-bottom: $space-2xl;
+  }
+}
+
+.av-masthead__label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--av-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--av-accent);
+  margin-bottom: $space-md;
+}
+
+.av-masthead__label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--av-line-strong);
+}
+
+.av-masthead__index {
+  color: var(--av-ink-3);
+}
+
+.av-masthead__title {
+  font-family: var(--av-display);
+  font-weight: 400;
+  font-size: clamp(2.35rem, 6.4vw, 4.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.av-masthead__aside {
+  color: var(--av-ink-2);
+  font-size: 0.95rem;
+  max-width: 26rem;
+}
+
+/* ---------- Shared type helpers ---------- */
+.av-accent {
+  color: var(--av-accent);
+}
+
+/* Italic serif accent used for the one emphasised word per heading. */
+.av-accent-em {
+  font-style: italic;
+  color: var(--av-accent);
+}
+
+.av-mono {
+  font-family: var(--av-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.av-rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background-color: var(--av-line);
+}
+
+/* ---------- Buttons ---------- */
+.av-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: $radius-full;
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 0.25s $ease-out,
+    border-color 0.25s $ease-out,
+    color 0.25s $ease-out,
+    transform 0.3s $ease-back;
+
+  svg {
+    width: 1.05em;
+    height: 1.05em;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.av-btn--solid {
+  background-color: var(--av-accent);
+  color: var(--av-accent-ink);
+
+  &:hover {
+    background-color: var(--av-accent-2);
+  }
+}
+
+.av-btn--outline {
+  border-color: var(--av-line-strong);
+  color: var(--av-ink);
+
+  &:hover {
+    border-color: var(--av-accent);
+    color: var(--av-accent);
+  }
+}
+
+/* ---------- Skip link ---------- */
+.av-skip {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.7rem 1.1rem;
+  border-radius: $radius-full;
+  background-color: var(--av-accent);
+  color: var(--av-accent-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform 0.2s $ease-out;
+}
+
+.av-skip:focus-visible {
+  transform: translateY(0);
+}
+
+.av :focus-visible {
+  outline: 2px solid var(--av-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}

@@ -1,0 +1,259 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.av-record__list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3xl;
+
+  @include respond-to(lg) {
+    gap: 8rem;
+  }
+}
+
+.av-record__panel {
+  position: relative;
+  display: grid;
+  gap: $space-lg;
+  padding-top: $space-lg;
+  border-top: 1px solid var(--av-line);
+
+  @include respond-to(lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: $space-4xl;
+    padding-top: $space-xl;
+  }
+}
+
+/* Alternating rhythm: art swaps sides on every other entry. */
+.av-record__panel.is-flipped {
+  @include respond-to(lg) {
+    .av-record__art {
+      order: 2;
+    }
+
+    .av-record__text {
+      order: 1;
+    }
+
+    .av-record__year {
+      right: auto;
+      left: 0;
+    }
+  }
+}
+
+.av-record__year {
+  position: absolute;
+  top: -0.1em;
+  right: 0;
+  z-index: 0;
+  font-family: var(--av-display);
+  font-size: clamp(5rem, 18vw, 13rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--av-ink);
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+/* ---------- Art plate ---------- */
+.av-record__art {
+  position: relative;
+  z-index: 1;
+  /* Square on every breakpoint so the orbit has the same inset at 12 / 3 / 6 /
+     9 o'clock — a 4×3 box was clipping the top and bottom of the travel. */
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  will-change: transform;
+}
+
+.av-record__motif {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: none;
+}
+
+/* Gradient stops carry the theme tokens; presentation attributes can't read
+   custom properties, so the colours have to come from CSS. */
+.av-record__stop--a {
+  stop-color: var(--av-accent);
+}
+
+.av-record__stop--b {
+  stop-color: var(--av-accent-2);
+}
+
+.av-record__stop--warm {
+  stop-color: var(--av-accent);
+  stop-opacity: 0.14;
+}
+
+.av-record__stop--clear {
+  stop-color: var(--av-accent);
+  stop-opacity: 0;
+}
+
+/* ---------- grid ---------- */
+.av-record__motif-cell {
+  stroke: var(--av-line-strong);
+  stroke-width: 1;
+}
+
+/* ---------- orbit ---------- */
+.av-record__motif-ring {
+  stroke: var(--av-line-strong);
+  stroke-width: 1;
+}
+
+.av-record__motif-ring--dashed {
+  stroke: var(--av-accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 12;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+.av-record__motif-ring--lit {
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.av-record__motif-dot {
+  fill: var(--av-accent);
+}
+
+.av-record__motif-dot--soft {
+  fill: var(--av-accent-2);
+  opacity: 0.85;
+}
+
+.av-record__motif-halo {
+  fill: var(--av-accent);
+  opacity: 0.18;
+}
+
+/* Held at zero so the ripples only exist once the motion timeline owns them —
+   nothing stacks up on the dot when motion is reduced. */
+.av-record__motif-wave {
+  fill: none;
+  stroke: var(--av-accent);
+  stroke-width: 1.5;
+  opacity: 0;
+}
+
+/* ---------- rule ---------- */
+.av-record__motif-rule {
+  stroke: var(--av-line-strong);
+  stroke-width: 1;
+}
+
+.av-record__motif-rule--lit {
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.av-record__motif-cap {
+  fill: var(--av-accent);
+  opacity: 0.5;
+}
+
+/* Both brand assets are white wordmarks, so the plate stays dark in the light
+   theme too — the same treatment the classic page gives them. */
+.av-record__plate {
+  position: relative;
+  z-index: 1;
+  /* Held under the outer ring (126 / 150 ≈ 84%) so the orbit frames the card
+     instead of sitting behind it. */
+  width: min(68%, 20rem);
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  padding: $space-lg;
+  border-radius: $radius-lg;
+  background-color: #141210;
+  border: 1px solid #2c2723;
+  box-shadow: 0 24px 60px var(--av-shadow);
+}
+
+.av-record__logo {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.av-record__wordmark {
+  font-family: var(--av-display);
+  font-size: clamp(1.35rem, 3.5vw, 2rem);
+  line-height: 1.1;
+  text-align: center;
+  color: #f5efe4;
+}
+
+/* ---------- Text column ---------- */
+.av-record__text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+}
+
+.av-record__period {
+  color: var(--av-accent);
+}
+
+.av-record__company {
+  font-family: var(--av-display);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 6.5vw, 4.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.av-record__role {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--av-ink);
+}
+
+.av-record__summary {
+  color: var(--av-ink-2);
+  line-height: 1.7;
+  max-width: 34rem;
+  text-wrap: pretty;
+}
+
+.av-record__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: $space-xs;
+
+  li {
+    font-family: var(--av-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--av-ink-2);
+    border: 1px solid var(--av-line-strong);
+    border-radius: $radius-full;
+    padding: 0.4rem 0.75rem;
+  }
+}
+
+.av-record__outro {
+  display: flex;
+  justify-content: center;
+  margin-top: $space-3xl;
+}

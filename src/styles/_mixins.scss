@@ -1,0 +1,45 @@
+@use "variables" as *;
+
+@mixin respond-to($bp) {
+  @if $bp == sm {
+    @media (min-width: $bp-sm) {
+      @content;
+    }
+  } @else if $bp == md {
+    @media (min-width: $bp-md) {
+      @content;
+    }
+  } @else if $bp == lg {
+    @media (min-width: $bp-lg) {
+      @content;
+    }
+  } @else if $bp == xl {
+    @media (min-width: $bp-xl) {
+      @content;
+    }
+  }
+}
+
+@mixin container {
+  width: 100%;
+  max-width: $container-max;
+  margin-inline: auto;
+  padding-inline: $space-lg;
+
+  @include respond-to(lg) {
+    padding-inline: $space-xl;
+  }
+}
+
+@mixin focus-ring {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@mixin section-padding {
+  padding-block: $space-3xl;
+
+  @include respond-to(lg) {
+    padding-block: $space-4xl;
+  }
+}

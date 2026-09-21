@@ -1,0 +1,202 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.av-premise__grid {
+  display: grid;
+  gap: $space-xl;
+
+  @include respond-to(lg) {
+    /* Deliberately uneven: the heading owns the left field and the body copy
+       hangs off-centre rather than sitting in a matched pair of columns. */
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: $space-4xl;
+    align-items: start;
+  }
+}
+
+.av-premise__lede {
+  display: flex;
+  flex-direction: column;
+  gap: $space-xl;
+
+  @include respond-to(lg) {
+    /* Overrides the grid's `align-items: start` so the figure can be bottomed
+       out against the taller body column instead of leaving a hole. */
+    align-self: stretch;
+  }
+}
+
+.av-premise__title {
+  font-family: var(--av-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5.6vw, 4.25rem);
+  line-height: 0.99;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+/* ---------- Diagram ---------- */
+.av-premise__diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  @include respond-to(lg) {
+    /* Left edge tracks the heading, foot lines up with the body copy beside it. */
+    max-width: min(34rem, 100%);
+    margin-top: auto;
+    margin-right: auto;
+  }
+}
+
+.av-premise__curve,
+.av-premise__steps {
+  fill: none;
+  stroke: var(--av-line-strong);
+  stroke-width: 1.25;
+}
+
+.av-premise__curve {
+  stroke-linecap: round;
+}
+
+.av-premise__steps {
+  stroke-linejoin: miter;
+}
+
+.av-premise__dots circle {
+  fill: var(--av-ink-3);
+}
+
+.av-premise__ring {
+  fill: color-mix(in srgb, var(--av-accent) 12%, transparent);
+  stroke: var(--av-accent);
+  stroke-width: 1.25;
+}
+
+.av-premise__node {
+  fill: var(--av-accent);
+}
+
+.av-premise__drop {
+  stroke: var(--av-accent);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  opacity: 0.7;
+}
+
+.av-premise__baseline,
+.av-premise__ticks line {
+  stroke: var(--av-line);
+  stroke-width: 1;
+}
+
+.av-premise__legend text {
+  fill: var(--av-ink-2);
+  font-family: var(--av-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+
+  &.is-accent {
+    fill: var(--av-accent);
+  }
+}
+
+.av-premise__body {
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+
+  p {
+    color: var(--av-ink-2);
+    font-size: 0.98rem;
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+
+  @include respond-to(lg) {
+    /* Optical alignment with the second line of the heading. */
+    padding-top: 0.75rem;
+  }
+}
+
+.av-premise__footnotes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: $space-sm 0 0;
+
+  > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $space-md;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--av-line);
+  }
+
+  dt {
+    font-family: var(--av-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--av-ink-3);
+    white-space: nowrap;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--av-ink);
+    text-align: right;
+  }
+}
+
+/* ---------- Metrics ---------- */
+.av-metrics {
+  display: grid;
+  gap: 0;
+  margin-top: $space-2xl;
+  border-top: 1px solid var(--av-line);
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.av-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: $space-lg 0;
+  border-bottom: 1px solid var(--av-line);
+
+  @include respond-to(md) {
+    padding: $space-xl $space-lg $space-xl 0;
+    border-bottom: none;
+
+    & + .av-metric {
+      border-left: 1px solid var(--av-line);
+      padding-left: $space-lg;
+    }
+  }
+}
+
+.av-metric__value {
+  font-family: var(--av-display);
+  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--av-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.av-metric__label {
+  font-family: var(--av-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--av-ink-2);
+}

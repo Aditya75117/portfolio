@@ -1,0 +1,153 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.av-method__inner {
+  display: grid;
+  gap: $space-xl;
+
+  @include respond-to(lg) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: $space-4xl;
+    align-items: start;
+  }
+}
+
+.av-method__intro {
+  @include respond-to(lg) {
+    position: sticky;
+    /* Clears the fixed header. */
+    top: 8rem;
+  }
+}
+
+.av-method__title {
+  font-family: var(--av-display);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5.2vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+/* ---------- Timeline ---------- */
+.av-method__track {
+  position: relative;
+  padding-left: $space-xl;
+
+  @include respond-to(md) {
+    padding-left: $space-2xl;
+  }
+}
+
+.av-method__spine {
+  position: absolute;
+  left: 0;
+  top: 0.6rem;
+  bottom: 0.6rem;
+  width: 1px;
+  background-color: var(--av-line);
+}
+
+.av-method__spine-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--av-accent);
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.av-method__steps {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2xl;
+
+  @include respond-to(lg) {
+    gap: $space-3xl;
+  }
+}
+
+.av-method__step {
+  position: relative;
+  display: grid;
+  gap: $space-xs;
+
+  @include respond-to(sm) {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: $space-lg;
+    align-items: start;
+  }
+}
+
+.av-method__node {
+  position: absolute;
+  top: 0.55rem;
+  left: calc(-1 * #{$space-xl});
+  width: 9px;
+  height: 9px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background-color: var(--av-bg);
+  border: 1px solid var(--av-line-strong);
+  transition:
+    background-color 0.4s $ease-out,
+    border-color 0.4s $ease-out,
+    transform 0.4s $ease-back;
+
+  @include respond-to(md) {
+    left: calc(-1 * #{$space-2xl});
+  }
+}
+
+.av-method__step.is-reached .av-method__node {
+  background-color: var(--av-accent);
+  border-color: var(--av-accent);
+  transform: scale(1.35);
+}
+
+.av-method__step-index {
+  font-family: var(--av-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--av-ink-3);
+  transition: color 0.4s $ease-out;
+  padding-top: 0.35rem;
+}
+
+.av-method__step.is-reached .av-method__step-index {
+  color: var(--av-accent);
+}
+
+.av-method__step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+
+  p {
+    color: var(--av-ink-2);
+    line-height: 1.7;
+    max-width: 32rem;
+    text-wrap: pretty;
+  }
+}
+
+.av-method__step-title {
+  font-family: var(--av-display);
+  font-weight: 400;
+  font-size: clamp(1.65rem, 3.4vw, 2.35rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-method__node,
+  .av-method__step-index {
+    transition: none;
+  }
+
+  /* Without the scrubbed draw the spine would read as an unfinished line. */
+  .av-method__spine-fill {
+    transform: scaleY(1);
+  }
+}

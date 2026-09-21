@@ -1,0 +1,382 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+
+/* ---------- Split-line masks (shared by every oversized heading) ---------- */
+.av-split__line {
+  display: block;
+  overflow: hidden;
+  /* Descenders in the display serif clip against a tight mask, so the mask is
+     padded and pulled back by the same amount. */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.av-split__inner {
+  display: block;
+  will-change: transform;
+}
+
+/* ---------- Hero ---------- */
+.av-hero {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(4.25rem + #{$space-2xl});
+  padding-bottom: $space-2xl;
+
+  @include respond-to(lg) {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-top: calc(4.25rem + #{$space-xl});
+    padding-bottom: $space-xl;
+  }
+}
+
+.av-hero__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+  width: 100%;
+}
+
+/* ---------- Ambient backdrop ---------- */
+.av-hero__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  color: var(--av-ink-3);
+  opacity: 0.55;
+
+  @include respond-to(lg) {
+    opacity: 0.7;
+  }
+}
+
+.av-hero__plate {
+  /* Centred behind the type — sized to sit inside the section rather than
+     bleeding past it, so it stays ambient instead of competing. */
+  width: min(94vw, 62vh);
+  height: auto;
+  overflow: visible;
+
+  @include respond-to(lg) {
+    width: min(46vw, 64vh);
+  }
+}
+
+.av-hero__masthead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-sm $space-lg;
+  justify-content: space-between;
+  color: var(--av-ink-3);
+}
+
+.av-hero__byline {
+  color: var(--av-ink-2);
+}
+
+.av-hero__stage {
+  position: relative;
+  display: grid;
+  gap: $space-lg;
+  padding-block: $space-lg;
+
+  @include respond-to(lg) {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+    align-items: center;
+    gap: $space-2xl;
+    padding-block: $space-xl;
+  }
+}
+
+.av-hero__headline {
+  font-family: var(--av-display);
+  font-weight: 400;
+  /* Runs to the edge of the measure at every size — the point of the layout. */
+  font-size: clamp(3.4rem, 15vw, 11rem);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+.av-hero__grid circle {
+  fill: currentColor;
+  opacity: 0.4;
+}
+
+.av-hero__ring {
+  fill: none;
+  stroke: var(--av-line-strong);
+  stroke-width: 1;
+}
+
+.av-hero__ticks line {
+  stroke: var(--av-line-strong);
+  stroke-width: 1.5;
+}
+
+.av-hero__arc {
+  stroke: var(--av-accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.av-hero__disc {
+  fill: var(--av-accent);
+}
+
+/* Sized in user units, not rem: an SVG length keyed to the root font size would
+   rescale the monogram against the artboard when a visitor zooms text. */
+.av-hero__monogram {
+  opacity: 0.14;
+  filter: brightness(0) invert(1);
+}
+
+[data-theme="light"] .av-hero__monogram {
+  filter: brightness(0);
+}
+
+/* ---------- Photograph ---------- */
+.av-hero__media {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 20rem);
+
+  @include respond-to(lg) {
+    width: 100%;
+    max-width: 24rem;
+    justify-self: end;
+  }
+}
+
+.av-hero__frame {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: $radius-lg;
+  border: 1px solid var(--av-line-strong);
+  aspect-ratio: 4 / 5;
+  box-shadow: 0 32px 80px var(--av-shadow);
+  /* Contains the blend modes below so they never reach the page background. */
+  isolation: isolate;
+
+  @include respond-to(lg) {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+.av-hero__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Flattened to greyscale first so the duotone layer sets the hue on its own,
+     rather than mixing with the photo's cool cast. */
+  filter: grayscale(1) contrast(1.12) brightness(0.92);
+  will-change: transform;
+}
+
+.av-hero__duotone {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 45%,
+      color-mix(in srgb, var(--av-bg) 85%, transparent) 100%
+    ),
+    linear-gradient(155deg, var(--av-accent) 0%, #4a1d0a 100%);
+  background-blend-mode: normal, normal;
+  mix-blend-mode: color;
+  opacity: 0.72;
+}
+
+/* Second pass in `multiply` grounds the base of the frame into the page so the
+   photo reads as part of the layout rather than pasted on top of it. */
+.av-hero__frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 50%,
+    color-mix(in srgb, var(--av-bg) 78%, transparent) 100%
+  );
+}
+
+.av-hero__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: $space-md;
+  font-family: var(--av-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--av-ink);
+  mix-blend-mode: normal;
+}
+
+/* ---------- Hero foot ---------- */
+.av-hero__foot {
+  display: grid;
+  gap: $space-xl;
+  padding-top: $space-lg;
+  border-top: 1px solid var(--av-line);
+
+  @include respond-to(md) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: $space-2xl;
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+  }
+}
+
+.av-hero__lede {
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+}
+
+.av-hero__standfirst {
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+  line-height: 1.6;
+  color: var(--av-ink-2);
+  max-width: 42rem;
+  text-wrap: pretty;
+}
+
+.av-hero__available {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--av-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--av-ink);
+}
+
+.av-hero__pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--av-accent);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--av-accent) 60%, transparent);
+  animation: av-pulse 2.4s $ease-out infinite;
+}
+
+@keyframes av-pulse {
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.av-hero__side {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+}
+
+.av-hero__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.av-hero__meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $space-md;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--av-line);
+
+  dt {
+    font-family: var(--av-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--av-ink-3);
+    white-space: nowrap;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--av-ink);
+    text-align: right;
+  }
+}
+
+.av-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-sm;
+}
+
+/* ---------- Scroll cue ---------- */
+.av-hero__cue {
+  display: none;
+
+  @include respond-to(lg) {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+    color: var(--av-ink-3);
+    padding-top: $space-lg;
+  }
+}
+
+.av-hero__cue-track {
+  position: relative;
+  width: 5.5rem;
+  height: 1px;
+  background-color: var(--av-line-strong);
+  overflow: hidden;
+}
+
+.av-hero__cue-dot {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 1.75rem;
+  background-color: var(--av-accent);
+  animation: av-cue 2.6s $ease-in-out infinite;
+}
+
+@keyframes av-cue {
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-hero__pulse,
+  .av-hero__cue-dot {
+    animation: none;
+  }
+
+  .av-hero__cue-dot {
+    transform: none;
+    width: 100%;
+  }
+}
