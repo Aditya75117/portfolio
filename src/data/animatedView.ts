@@ -55,7 +55,7 @@ export const animatedView = {
     metrics: [
       { value: 7, suffix: "+", label: "Years in frontend & UI" },
       { value: 3, suffix: "", label: "Companies shipped with" },
-      { value: 8, suffix: "", label: "Core tools in daily use" },
+      { value: 16, suffix: "", label: "Core tools in daily use" },
     ],
     /** Non-numeric facts shown alongside the counters. */
     footnotes: [
@@ -126,17 +126,25 @@ export const animatedView = {
   toolkit: {
     index: "03",
     eyebrow: "The toolkit",
-    title: "Eight things, used properly.",
+    title: "Sixteen things, used properly.",
     note: "Engineering precision, backed by design experience.",
     items: [
       { icon: "react", label: "React.js", note: "Component architecture" },
       { icon: "nextjs", label: "Next.js", note: "App Router & rendering" },
       { icon: "typescript", label: "TypeScript", note: "Types as documentation" },
+      { icon: "redux", label: "Redux", note: "Predictable state" },
       { icon: "javascript", label: "JavaScript", note: "The fundamentals" },
-      { icon: "sass", label: "Sass", note: "Scalable stylesheets" },
-      { icon: "css3", label: "CSS3", note: "Layout & motion" },
       { icon: "html5", label: "HTML5", note: "Semantics first" },
+      { icon: "css3", label: "CSS3", note: "Layout & motion" },
+      { icon: "sass", label: "Sass", note: "Scalable stylesheets" },
+      { icon: "tailwind", label: "Tailwind CSS", note: "Utility-first UI" },
+      { icon: "shopify", label: "Shopify", note: "Themes & storefronts" },
+      { icon: "wordpress", label: "WordPress", note: "CMS & custom themes" },
+      { icon: "webflow", label: "Webflow", note: "Designed, then published" },
       { icon: "figma", label: "Figma", note: "Design handoff" },
+      { icon: "photoshop", label: "Photoshop", note: "Asset craft" },
+      { icon: "seo", label: "SEO", note: "Findable pages" },
+      { icon: "gsap", label: "GSAP", note: "Motion & timelines" },
     ],
   },
 
