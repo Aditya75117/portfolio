@@ -14,7 +14,10 @@ import { gsap, ScrollTrigger } from "./motion";
 
 type ScrollTo = (target: string | HTMLElement) => void;
 
+type SetScrollLocked = (locked: boolean) => void;
+
 const SmoothScrollContext = createContext<ScrollTo | null>(null);
+const ScrollLockContext = createContext<SetScrollLocked | null>(null);
 
 /**
  * Drives Lenis from the GSAP ticker so smoothing and ScrollTrigger share one
@@ -83,9 +86,22 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   }, []);
 
+  // `overflow: hidden` on the body does not reach Lenis — it drives scrolling
+  // itself from wheel/touch events — so overlays have to pause it explicitly.
+  const setScrollLocked = useCallback<SetScrollLocked>((locked) => {
+    if (locked) lenisRef.current?.stop();
+    else lenisRef.current?.start();
+  }, []);
+
   return (
-    <SmoothScrollContext.Provider value={scrollTo}>{children}</SmoothScrollContext.Provider>
+    <SmoothScrollContext.Provider value={scrollTo}>
+      <ScrollLockContext.Provider value={setScrollLocked}>{children}</ScrollLockContext.Provider>
+    </SmoothScrollContext.Provider>
   );
+}
+
+export function useScrollLock() {
+  return useContext(ScrollLockContext);
 }
 
 /**
