@@ -541,7 +541,7 @@ export function RecordPanel({ entry, index }: { entry: RecordEntry; index: numbe
               width={entry.art.width}
               height={entry.art.height}
               className="av-record__logo"
-              sizes="(min-width: 1024px) 30vw, 70vw"
+              sizes="(min-width: 991px) 30vw, 70vw"
             />
           ) : (
             <span className="av-record__wordmark">{entry.art.label}</span>
