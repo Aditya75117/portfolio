@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import { AnimatedFooter } from "@/components/animated/AnimatedFooter";
 import { AnimatedHero } from "@/components/animated/AnimatedHero";
@@ -25,12 +24,6 @@ const mono = IBM_Plex_Mono({
   weight: ["400", "500"],
   display: "swap",
 });
-
-export const metadata: Metadata = {
-  title: "Aditya Dutta — Senior UI Developer",
-  description:
-    "An editorial, scroll-driven view of Aditya Dutta's portfolio: seven years of frontend and UI development across ShyftLabs, illuminz and Virtual KPO Consultants.",
-};
 
 export default function Home() {
   return (

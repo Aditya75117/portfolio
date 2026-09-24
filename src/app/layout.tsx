@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { ThemeScript } from "@/components/ThemeScript";
+import { site, siteUrl } from "@/lib/site";
 import "@/styles/main.scss";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -15,9 +16,39 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Aditya Dutta — Senior UI Developer",
-  description:
-    "Portfolio of Aditya Dutta, a Senior UI Developer in Noida with 7+ years of experience building responsive, high-performance web applications with React.js and Next.js.",
+  metadataBase: new URL(siteUrl),
+  title: site.title,
+  description: site.description,
+  alternates: {
+    canonical: "/",
+  },
+  authors: [{ name: site.name, url: site.linkedin }],
+  creator: site.name,
+  icons: {
+    icon: "/brand/ad-mark.png",
+    apple: "/brand/ad-mark.png",
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: site.name,
+    title: site.title,
+    description: site.description,
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.title,
+    description: site.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0b0a09",
 };
 
 export default function RootLayout({
@@ -31,6 +62,26 @@ export default function RootLayout({
         <ThemeScript />
       </head>
       <body className={`${jakarta.variable} ${inter.variable}`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: site.name,
+              jobTitle: site.role,
+              url: siteUrl,
+              email: `mailto:${site.email}`,
+              sameAs: [site.linkedin],
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Noida",
+                addressRegion: "Uttar Pradesh",
+                addressCountry: "IN",
+              },
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
         {children}
       </body>
     </html>
