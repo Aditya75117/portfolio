@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { animatedView } from "@/data/animatedView";
+import { Icon } from "@/components/icons/Icon";
 import { Monogram } from "@/components/icons/Monogram";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useAnchorNavigation } from "./SmoothScroll";
+import { useAnchorNavigation, useScrollLock } from "./SmoothScroll";
 
 const SECTION_IDS = animatedView.nav.map((item) => item.id);
 
@@ -18,10 +19,16 @@ export function AnimatedNav() {
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   const onAnchorClick = useAnchorNavigation();
+  const setScrollLocked = useScrollLock();
 
-  /* Scroll progress + condensed state, both written from one rAF-throttled read
-     so the header never forces extra layout during scroll. */
+  /* Scroll progress, condensed state and the active section, all written from
+     one rAF-throttled read so the header never forces extra layout during
+     scroll. */
   useEffect(() => {
+    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => Boolean(el),
+    );
+
     let frame = 0;
 
     const update = () => {
@@ -33,6 +40,17 @@ export function AnimatedNav() {
         progressRef.current.style.transform = `scaleX(${ratio})`;
       }
       setCondensed(window.scrollY > 24);
+
+      /* Sections run several viewports tall, so their intersection ratio
+         against a narrow band can never clear a useful threshold. Track the
+         last section whose top has crossed the reading line instead. */
+      const line = window.innerHeight * 0.45;
+      const current = sections.reduce<HTMLElement | undefined>(
+        (found, section) => (section.getBoundingClientRect().top <= line ? section : found),
+        sections[0],
+      );
+
+      if (current) setActive(current.id);
     };
 
     const onScroll = () => {
@@ -50,27 +68,6 @@ export function AnimatedNav() {
     };
   }, []);
 
-  useEffect(() => {
-    const elements = SECTION_IDS.map((id) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => Boolean(el),
-    );
-    if (!elements.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-        if (visible[0]?.target.id) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-40% 0px -50% 0px", threshold: [0.05, 0.25, 0.6] },
-    );
-
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
   const close = useCallback(() => {
     setOpen(false);
     toggleRef.current?.focus();
@@ -83,6 +80,7 @@ export function AnimatedNav() {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    setScrollLocked?.(true);
 
     const panel = panelRef.current;
     panel?.querySelector<HTMLElement>("a, button")?.focus();
@@ -115,8 +113,9 @@ export function AnimatedNav() {
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
+      setScrollLocked?.(false);
     };
-  }, [open, close]);
+  }, [open, close, setScrollLocked]);
 
   return (
     <header className={`av-nav${condensed ? " is-condensed" : ""}`}>
@@ -184,34 +183,47 @@ export function AnimatedNav() {
         aria-modal="true"
         aria-label="Site menu"
         hidden={!open}
+        // Lets the panel scroll natively instead of Lenis swallowing the input.
+        data-lenis-prevent
       >
-        <ol className="av-nav__menu-list">
-          {animatedView.nav.map((item, index) => (
-            <li key={item.id}>
-              <a
-                href={item.href}
-                className="av-nav__menu-link"
-                onClick={(event) => {
-                  setOpen(false);
-                  onAnchorClick(event, item.href);
-                }}
-              >
-                <span className="av-nav__menu-index">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ol>
-        <a
-          href={animatedView.journeyHref}
-          className="av-nav__menu-classic"
-          target="_blank"
-          rel="noreferrer noopener"
+        <button
+          type="button"
+          className="av-nav__menu-close"
+          aria-label="Close menu"
+          onClick={close}
         >
-          Journey
-        </a>
+          <Icon name="close" />
+        </button>
+
+        <div className="av-nav__menu-inner">
+          <ol className="av-nav__menu-list">
+            {animatedView.nav.map((item, index) => (
+              <li key={item.id}>
+                <a
+                  href={item.href}
+                  className="av-nav__menu-link"
+                  onClick={(event) => {
+                    setOpen(false);
+                    onAnchorClick(event, item.href);
+                  }}
+                >
+                  <span className="av-nav__menu-index">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+          <a
+            href={animatedView.journeyHref}
+            className="av-nav__menu-classic"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Journey
+          </a>
+        </div>
       </div>
     </header>
   );
