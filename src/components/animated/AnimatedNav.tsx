@@ -1,4 +1,5 @@
 "use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { animatedView } from "@/data/animatedView";
 import { Icon } from "@/components/icons/Icon";
