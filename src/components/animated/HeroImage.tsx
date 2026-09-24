@@ -59,7 +59,7 @@ export function HeroImage({
           width={1600}
           height={2398}
           priority
-          sizes="(min-width: 1024px) 34vw, (min-width: 768px) 60vw, 90vw"
+          sizes="(min-width: 991px) 34vw, (min-width: 768px) 60vw, 90vw"
           className="av-hero__photo"
           data-photo-image
         />
